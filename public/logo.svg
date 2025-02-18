@@ -1,0 +1,14 @@
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" fill="none">
+    <!-- Background Circle -->
+    <circle cx="100" cy="100" r="90" fill="#E0F7FA" stroke="#009688" stroke-width="5"/>
+    
+    <!-- Abstract Human Figures -->
+    <circle cx="70" cy="80" r="20" fill="#00796B"/>
+    <circle cx="130" cy="80" r="20" fill="#4DB6AC"/>
+    
+    <path d="M50 120 Q100 160 150 120" stroke="#00796B" stroke-width="8" fill="none" stroke-linecap="round"/>
+    <path d="M70 100 Q100 130 130 100" stroke="#4DB6AC" stroke-width="8" fill="none" stroke-linecap="round"/>
+    
+    <!-- Checkmark Icon -->
+    <path d="M75 140 L95 160 L135 120" stroke="#009688" stroke-width="6" fill="none" stroke-linecap="round"/>
+</svg>

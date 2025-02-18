@@ -1,0 +1,219 @@
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 500;
+
+  color-scheme: light dark;
+  color: #f5f5f5; /* Light text for dark mode */
+  background-color: #4e4e4e; /* Darker background for better contrast */
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  font-weight: 500;
+  color: #4a90e2; /* Slightly softer blue */
+  text-decoration: inherit;
+}
+a:hover {
+  color: #3a78d1;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
+  font-family: Arial, sans-serif;
+  background-color: #343434; /* Dark theme fix */
+  color: #f5f5f5;
+}
+
+#app {
+  width: 100%;
+  height: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.chat-history {
+  padding: 10px;
+  flex-grow: 1;
+  overflow-y: auto;
+  margin-bottom: 10px;
+}
+
+.chat-entry {
+  margin-bottom: 10px;
+}
+
+.history-chat-input {
+  background-color: #9b59b6; /* Softer purple */
+  color: white;
+  padding: 10px;
+  border-radius: 10px;
+  max-width: 70%;
+  align-self: flex-end;
+  text-align: right;
+  margin-left: auto;
+  width: fit-content;
+}
+
+.history-chat-output {
+  background-color: #9b59b6; /* Softer green */
+  color: white;
+  padding: 10px;
+  border-radius: 10px;
+  max-width: 70%;
+  align-self: flex-start;
+  text-align: left;
+  margin-right: auto;
+  margin-top: 5px;
+  width: fit-content;
+}
+
+.input-group {
+  display: flex;
+  align-items: center; /* Ensures button aligns perfectly */
+  gap: 5px; /* Adds a tiny gap between input and button */
+}
+
+.chat-input {
+  font-size: 1em;
+  background-color: #9b59b6;
+  color: white;
+  padding: 10px; /* Keep height consistent */
+  border-radius: 10px;
+  max-width: 70%;
+  align-self: flex-end;
+  text-align: left;
+  margin-left: auto;
+  width: auto;
+  min-width: 10px;
+  margin-top: 5px;
+  border: none;
+  outline: none;
+
+  /* Fix spacing issue */
+  /* box-sizing: border-box; /* Ensures padding doesn't increase width */
+  padding-right: 12px; /* Adds space inside input */
+}
+
+#send {
+  display: none;
+}
+
+.measure-span {
+  position: absolute;
+  visibility: hidden;
+  white-space: nowrap;
+  font-size: inherit;
+  padding: 10px;
+  border-radius: 10px;
+}
+
+.btn {
+  flex-shrink: 0;
+  padding: 10px 20px;
+  border-radius: 10px;
+  border: none;
+  background-color: #3498db; /* Bright blue */
+  color: white;
+  cursor: pointer;
+}
+
+.btn:hover {
+  background-color: #2980b9; /* Darker blue */
+}
+
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+.logo:hover {
+  filter: drop-shadow(0 0 2em #3498dbaa);
+}
+.logo.vanilla:hover {
+  filter: drop-shadow(0 0 2em #3178c6aa);
+}
+
+.card {
+  padding: 2em;
+  background: #2a2a2a; /* Darker card background */
+  color: white;
+  border-radius: 8px;
+}
+
+.read-the-docs {
+  color: #aaa;
+}
+
+button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #2980b9;
+  color: white;
+  cursor: pointer;
+  transition: border-color 0.25s, background-color 0.25s;
+}
+
+button:hover {
+  border-color: #ff64d0;
+  background-color: #ff2dac; /* Pink hover effect */
+}
+
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+/* Light Mode Fix */
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #213547;
+    background-color: #ffffff;
+  }
+  a {
+    color: #0056b3;
+  }
+  a:hover {
+    color: #003d82;
+  }
+  button {
+    background-color: #f9f9f9;
+    color: black;
+  }
+  .history-chat-input {
+    background-color: #dba8f3; /* Softer purple */
+    color: black;
+  }
+  .history-chat-output {
+    background-color: #a2d5a2; /* Softer green */
+    color: black;
+  }
+  .chat-input {
+    background-color: #dba8f3;
+    color: black;
+  }
+  .btn {
+    background-color: #007bff;
+    color: white;
+  }
+  .btn:hover {
+    background-color: #0056b3;
+  }
+}
