@@ -3,15 +3,8 @@ import { sendMessage, adjustInputWidth } from './send.ts';
 
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
   <div>
-    <h1>Chatter</hjson1>
     <!-- Checkbox -->
-    <div class="form-check">
-      <input class="form-check-input" type="checkbox" value="" id="use-gemini">
-      <label class="form-check-label" for="use-gemini">
-        Use Gemini
-      </label>
-    </div>
-
+    <div class="history-chat-output">Welcome to Pizza Topping Basic demonstration. You can order a pizza with selected sizes, types, and toppings. Ask for help if needed.</div>
     <!-- chat history -->
     <div id="chat-history" class="chat-history"></div>
     <!-- input chat -->
@@ -19,6 +12,12 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
       <span id="measure-span" class="measure-span"></span>
       <input type="text" id="chat-input" class="chat-input" placeholder="Type your message here" />
       <button id="send" class="btn btn-primary">Send</button>
+    </div>
+    <div class="form-check">
+      <label class="form-check-label ms-2" for="use-gemini">
+      Use Gemini
+      </label>
+      <input class="form-check-input" type="checkbox" value="true" id="use-gemini" checked>
     </div>
     <div id="chat-container" class="chat-history"></div>
   </div>
