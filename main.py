@@ -3,12 +3,13 @@ from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 import ollama
 import httpx
+import os
 
 # Boolean flag to toggle between Gemini API and Ollama
 USE_GEMINI = True
 
 # Gemini API Configuration
-GEMINI_API_KEY = "AIzaSyAj5Q6mwmZVCFZwyHEg2i3Z0xZKuF3rJpY"
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 GEMINI_API_URL = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={GEMINI_API_KEY}"
 
 # FastAPI App
