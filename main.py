@@ -77,10 +77,14 @@ async def classify_intent(user_input: str, use_gemini: bool) -> str:
         return await classify_intent_gemini(user_input)
     return await classify_intent_ollama(user_input)
 
+# Extend ChatNode to support digression properties.
+# The optional properties 'digress_in' and 'digress_out' allow us to mark nodes for digression.
 class ChatNode:
-    def __init__(self, name):
+    def __init__(self, name, digress_in=None, digress_out=None):
         self.name = name
         self.intents = {}
+        self.digress_in = digress_in  # e.g. "returns" (digression returns to the main flow) 
+        self.digress_out = digress_out
 
     def add_intent(self, intent, response):
         self.intents[intent] = response
@@ -96,9 +100,23 @@ class ChatBot:
         self.conversation = {}
         # Order flow state: None, awaiting_name, awaiting_size, awaiting_toppings
         self.order_state = None
+        # Stack to hold order state during a digression
+        self.digression_stack = []
 
     def add_node(self, node):
         self.nodes[node.name] = node
+
+    def get_order_prompt(self):
+        """Return a prompt based on the current order state."""
+        if self.order_state == "awaiting_name":
+            return "What is your name?"
+        elif self.order_state == "awaiting_size":
+            return (f"Nice to meet you, {self.conversation.get('name', 'customer')}! "
+                    "What pizza size would you like? (small, medium, large)")
+        elif self.order_state == "awaiting_toppings":
+            return "What toppings would you like? Please list them separated by commas."
+        else:
+            return ""
 
     def handle_order_flow(self, user_input: str, intent: str = None) -> str:
         """Handles the ordering conversation flow.
@@ -113,14 +131,15 @@ class ChatBot:
         elif self.order_state == "awaiting_name":
             self.conversation["name"] = user_input.strip()
             self.order_state = "awaiting_size"
-            return f"Nice to meet you, {self.conversation['name']}! What pizza size would you like? (small, medium, large)"
+            return (f"Nice to meet you, {self.conversation['name']}! "
+                    "What pizza size would you like? (small, medium, large)")
         elif self.order_state == "awaiting_size":
             self.conversation["pizza_size"] = user_input.strip()
             self.order_state = "awaiting_toppings"
             return (f"Great! You've chosen a {self.conversation['pizza_size']} pizza. "
                     "What toppings would you like? Please list them separated by commas.")
         elif self.order_state == "awaiting_toppings":
-            # Check if the user is asking an interruption question about toppings
+            # If the user asks a toppings-related question, handle it as an interruption.
             if intent == "toppings_list":
                 toppings_info = self.nodes.get("toppings_list").get_response("toppings_list")
                 followup = "Now, please list the toppings you'd like, separated by commas."
@@ -143,10 +162,32 @@ class ChatBot:
             return "I'm sorry, something went wrong with your order. Let's start over. What is your name?"
 
     async def handle_input(self, user_input, use_gemini):
+        print(f"User input: {user_input}")
         intent = await classify_intent(user_input, use_gemini)
         print(f"Intent: {intent}")
 
-        # If an order is in progress, handle the order flow with potential interruption.
+        # If an order is in progress, check for potential digression.
+        # For example, if the user asks for help (and the help node is marked with digress_in="returns"),
+        # then temporarily provide that answer and then resume the order flow.
+        if self.order_state is not None:
+            node = self.nodes.get(intent)
+            if node and node.digress_in:
+                if node.digress_in == "returns":
+                    # Save current order state
+                    self.digression_stack.append((self.order_state, self.conversation.copy()))
+                    response = node.get_response(intent)
+                    # After providing the digression answer, resume the previous state.
+                    if self.digression_stack:
+                        self.order_state, self.conversation = self.digression_stack.pop()
+                    resume_prompt = self.get_order_prompt()
+                    return f"{response}\n\nResuming order: {resume_prompt}"
+                elif node.digress_in == "does_not_return":
+                    # End the current order flow entirely.
+                    self.order_state = None
+                    self.conversation = {}
+                    return node.get_response(intent)
+
+        # If an order is in progress or the intent is 'order', handle order flow.
         if self.order_state is not None or intent == "order":
             return self.handle_order_flow(user_input, intent)
 
@@ -178,8 +219,8 @@ bot = ChatBot()
 greetings_node = ChatNode("greetings")
 greetings_node.add_intent("greetings", "Welcome to Pizza Topping Basic demonstration. You can order a pizza with selected sizes, types, and toppings. Ask for help if needed.")
 
-# Node for "help" intent
-help_node = ChatNode("help")
+# Node for "help" intent with a digression that returns to the order flow.
+help_node = ChatNode("help", digress_in="returns", digress_out="allow_all")
 help_node.add_intent("help", "Sure, I can help! If you want to order a pizza, just type 'order'.")
 
 # Node for "discount" intent
